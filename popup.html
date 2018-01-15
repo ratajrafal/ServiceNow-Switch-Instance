@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Switch Instance Popup Window</title>
+    <style type="text/css">
+      body {
+        margin: 10px;
+        white-space: nowrap;
+      }
+
+      h1 {
+        font-size: 15px;
+      }
+
+      #container {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <h1>Open the current page </h1>
+    <div id="container">
+      <span>on the following instance:&nbsp;&nbsp;&nbsp;</span>
+      <select id="dropdown">
+        <option selected disabled hidden value=''></option>    
+      </select>
+    </div>
+	<div id="info">
+		  <span><br><br>You can configure your instances<br>in the plugin options.</span>  
+	</div> 
+	 
+  </body>
+</html>
