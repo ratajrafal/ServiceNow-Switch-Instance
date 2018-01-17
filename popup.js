@@ -95,129 +95,56 @@ function getCurrentTab(callback) {
  
  
 
-function load_dropdown() {
-  
-	var sel = document.getElementById('dropdown');
-
-
-
- // Instance1
-	chrome.storage.sync.get('Instance1', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance1":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-
-			sel.appendChild(opt);
-		}
-    });
-  // Instance2
-	chrome.storage.sync.get('Instance2', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance2":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance3
-	chrome.storage.sync.get('Instance3', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance3":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance4
-	chrome.storage.sync.get('Instance4', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance4":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance5
-	chrome.storage.sync.get('Instance5', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance5":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance6
-	chrome.storage.sync.get('Instance6', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance6":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance7
-	chrome.storage.sync.get('Instance7', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance7":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance8
-	chrome.storage.sync.get('Instance8', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance8":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance9
-	chrome.storage.sync.get('Instance9', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance9":"','').replace('"}',''); 
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
- // Instance10
-	chrome.storage.sync.get('Instance10', function (obj) {	
-		var myVal = JSON.stringify(obj).replace('{"Instance10":"','').replace('"}',''); 
-
-		if ('' != myVal) {
-			var opt = document.createElement('option');
-			opt.innerHTML = myVal;
-			opt.value = myVal;	
-		
-			sel.appendChild(opt);
-		}
-    });
-
+function read_dropdown() {
+	var sel = document.getElementById('dropdown');  
+	var optionsT = {};
+	chrome.storage.sync.get( optionsT['Instance1'], function (obj) {
+		for (i =1 ; i< 11; i++) {	
+			var myVal = eval(obj)['Instance'+i]
+			if ('' != myVal) {
+				var opt = document.createElement('option');
+				opt.innerHTML = myVal;
+				opt.value = myVal;	
+				sel.appendChild(opt);
+				}
+			}
+		});	
 }
-document.addEventListener('DOMContentLoaded', load_dropdown);
 
+
+
+function write_checkbox() {
+	var f = document.getElementById("newtabbox");  
+	var checkboxState = {checkboxStstus : f.checked}; 
+      chrome.storage.sync.set(checkboxState, function() {
+		// Update status to let user know options were saved.
+		var status = document.getElementById('status');
+		status.textContent = 'Saved';
+		
+		setTimeout(function() {
+		  status.textContent = '';			
+		}, 1300);
+	  });
+    }
+
+
+function read_checkbox() {
+    chrome.storage.sync.get({
+//False is the default value when first opening the extension
+        'checkboxStstus' : false
+    }, function (items) {
+        document.getElementById('newtabbox').checked = 
+		eval(items)['checkboxStstus'];
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+      document.querySelector('#newtabbox').addEventListener('change', write_checkbox);
+});
 
 // add listners 
+document.addEventListener('DOMContentLoaded', read_dropdown);
+document.addEventListener('DOMContentLoaded', read_checkbox);
 document.addEventListener('DOMContentLoaded', () => {
 	getCurrentTab((tab) => {
 	  var dropdown = document.getElementById('dropdown');
@@ -227,8 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				var dropdown = document.getElementById("dropdown");
 				
 				var myNewUrl =  tab.url.replace(/.*.service-now.com/, 'https://'+dropdown.value+'.service-now.com');
-
-				chrome.tabs.update(tab.id, {url: myNewUrl});
+				
+				if (document.getElementById('newtabbox').checked) {
+					chrome.tabs.create({ url: myNewUrl });
+				}else {
+					chrome.tabs.update(tab.id, {url: myNewUrl});
+				}
 				window.close();
 			});		    
 		});
