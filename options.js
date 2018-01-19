@@ -35,12 +35,18 @@ function read_options() {
 	var f = document.getElementById("instances");  
 	var instanceT = {};
 	chrome.storage.sync.get( instanceT['Instance1'], function (obj) {
-		for (i =1 ; i< 11; i++) {				
-			f.elements[i-1].value = eval(obj)['Instance'+i];
+		for (i =1 ; i< 11; i++) {	
+		var instanceVal = eval(obj)['Instance'+i]; 
+		if (typeof instanceVal === "undefined")		{
+			f.elements[i-1].value = '';
+			}else {
+				f.elements[i-1].value = instanceVal;
 			}
-		});		
+		}
+	});		
 }
 
 document.addEventListener('DOMContentLoaded', read_options);
+
 document.getElementById('save').addEventListener('click',  write_options);
 	
