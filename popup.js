@@ -159,8 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				var dropdown = document.getElementById("dropdown");
 
-				var myNewUrl = tab.url.replace(/.*.service-now.com/, 'https://' + dropdown.value + '.service-now.com');
-
+					if ( dropdown.value.search("https://") == -1 ) { //  /.*.service-now.com/
+						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}/, 'https://' + dropdown.value + '.service-now.com');
+					}else{
+						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}/, dropdown.value);
+					}
+						
 				if (document.getElementById('newtabbox').checked) {
 					chrome.tabs.create({
 						url: myNewUrl
