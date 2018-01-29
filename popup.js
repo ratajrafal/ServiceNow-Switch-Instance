@@ -160,9 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				var dropdown = document.getElementById("dropdown");
 
 					if ( dropdown.value.search("https://") == -1 ) { //  /.*.service-now.com/
-						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}/, 'https://' + dropdown.value + '.service-now.com');
+						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}\//, 'https://' + dropdown.value + '.service-now.com/');
 					}else{
-						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}/, dropdown.value);
+						var myNewUrl = tab.url.replace(/.*\.[a-zA-Z]{3}\//, dropdown.value+'/');
 					}
 						
 				if (document.getElementById('newtabbox').checked) {
